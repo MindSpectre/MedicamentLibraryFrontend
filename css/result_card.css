@@ -1,0 +1,51 @@
+
+/* Result Card Styles */
+.result-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+
+    background-color: #fff; /* White background for contrast */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    color: #202936; /* Dark color for better readability */
+    font-family: 'Lato', sans-serif;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* For hover effects */
+}
+
+.result-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #34495e; /* Slightly darker for headers */
+}
+
+.result-card p {
+    margin: 0.5rem 0;
+    color: #333; /* General text color */
+}
+
+.result-card ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+    color: #444; /* Slightly lighter than paragraphs */
+}
+
+.result-card li {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.result-card strong {
+    color: #2c3e50; /* Highlighted text color for emphasis */
+}
+
+/* Hover Effect */
+.result-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Flexible tiles */
+    gap: 20px; /* Spacing between cards */
+    margin-top: 20px;
+}

@@ -1,0 +1,49 @@
+# Normalize text files
+* text=auto
+
+# Set binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.svg binary
+
+# Exclude minified files from diffs
+*.min.js -diff
+*.min.css -diff
+
+# JSON files as text
+*.json text
+*.json5 text
+
+# TypeScript and JavaScript files
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+
+# CSS and SCSS files
+*.css text
+*.scss text
+
+# HTML and XML files
+*.html text
+*.xml text
+*.xhtml text
+
+# Lockfiles
+package-lock.json merge=union
+yarn.lock merge=union
+
+# Markdown files
+*.md text
+*.markdown text
+
+# Ignore formatting in large static assets
+*.mp4 binary
+*.mp3 binary
+*.woff binary
+*.woff2 binary
+*.ttf binary

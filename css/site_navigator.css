@@ -1,0 +1,101 @@
+
+.navigate-search-dropdown {
+    position: absolute;
+    top: 60px; /* Adjust based on input position */
+    left: 10px; /* Adjust based on input position */
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    width: 100%;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.navigate-search-suggestion {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #007bff;
+}
+
+.navigate-search-suggestion:hover {
+    background-color: #007bff;
+    color: white;
+}
+/* Search Box Styles */
+.navigator-search-box {
+
+    display: flex; /* Ensures inline layout for button and input */
+    align-items: center; /* Centers the button and input vertically */
+    position: relative; /* Positioning for the button */
+}
+
+.navigator-input-search {
+    height: 50px;
+    width: 50px;
+    border-style: none;
+    font-size: 18px;
+    text-align: left;
+    letter-spacing: 2px;
+    outline: none;
+    /*background-position: right;*/
+    border-radius: 25px;
+    transition: all 0.5s ease-in-out;
+    background-color: #22a6b3;
+    padding: 10px 40px 10px 50px; /* Leaves room for the button on the right */
+    color: #fff;
+    position: relative;
+    pointer-events: painted;
+}
+
+.navigator-input-search::placeholder {
+    color: rgb(139, 223, 247);
+    font-size: 18px;
+    letter-spacing: 2px;
+    font-weight: 100;
+    text-align: center;
+}
+
+.navigator-search-button{
+    position: absolute; /* Position inside the navigator-search-box */
+    width: 50px;
+    height: 50px;
+    border-style: none;
+    font-size: 20px;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    border-radius: 50%;
+    color:#ffffff ;
+    background-color:transparent;
+    pointer-events: painted;
+    z-index: 10;
+
+}
+.navigator-search-button:focus ~ .navigator-input-search{
+    width: 300px;
+    border-radius: 0;
+    background-color: transparent;
+    border-bottom:1px solid rgba(255,255,255,.5);
+    transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+}
+.navigator-input-search:focus{
+    width: 300px;
+    border-radius: 0;
+    background-color: transparent;
+    border-bottom:1px solid rgba(255,255,255,.5);
+    transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+}
+
+.navigate-search-suggestion {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #007bff;
+}
+
+.navigate-search-suggestion:hover {
+    background-color: #0e464a;
+    color: white;
+}
