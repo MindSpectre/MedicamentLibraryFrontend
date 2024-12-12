@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: #21252b; /* Creamy beige for the background */
+    --foreground: rgb(252, 236, 201); /* Muted dark blue for text */
+    --card: #f5f5f3; /* Slightly lighter beige for cards */
+    --card-foreground: #4a4a4a; /* Neutral gray for card text */
+    --popover: #1c2e3d; /* White for popovers */
+    --popover-foreground: var(--foreground); /* Muted dark blue for popover text */
+    --primary: rgb(4, 68, 121); /* Muted blue for primary elements */
+    --primary-foreground: #ffffff; /* White text on primary elements */
+    --secondary: #202936; /* Muted taupe for secondary elements */
+    --secondary-foreground: #ffffff; /* White text on secondary elements */
+    --muted: #d3cbc6; /* Soft beige for muted elements */
+    --muted-foreground: #4a4a4a; /* Neutral gray for muted text */
+    --accent: rgba(238, 0, 0, 0.82); /* Deep brown for accents */
+    --accent-foreground: #ffffff; /* White text on accents */
+    --destructive: #b64926; /* Warm reddish-brown for destructive actions */
+    --destructive-foreground: #ffffff; /* White text on destructive actions */
+    --border: #ccc5c0; /* Light beige-gray for borders */
+    --input: #f5f5f3; /* Light beige for input fields */
+    --ring: #202936; /* Muted taupe for focus rings */
+    --chart-1: #355c7d; /* Muted blue for charts */
+    --chart-2: #8d8741; /* Muted taupe for charts */
+    --chart-3: #5d4157; /* Deep brown for charts */
+    --chart-4: #b64926; /* Warm reddish-brown for charts */
+    --chart-5: #d3cbc6; /* Soft beige for charts */
+    --radius: 0.5rem; /* Default border radius */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

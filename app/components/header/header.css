@@ -1,0 +1,121 @@
+/* General Header Styling */
+.header {
+    width: 100%;
+    background-color: var(--background); /* Creamy beige for background */
+    color: var(--foreground); /* Muted dark blue for text */
+}
+
+/* Top Bar */
+.top-bar {
+    background-color: var(--background); /* Matches header background */
+    padding: 12px 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    display: flex;
+}
+
+.top-bar .container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--foreground); /* White text for contrast */
+    text-decoration: none;
+}
+
+.logo:hover {
+    color: var(--accent); /* Deep brown accent color for hover */
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* Navigation */
+.navigation {
+    background-color: var(--background); /* Creamy beige background */
+    box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.1); /* Subtle inset shadow */
+    padding: 8px 24px;
+}
+
+.navigation .container {
+    display: flex;
+    justify-content: space-between;
+    align-content: flex-start;
+}
+
+.nav-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    justify-content: space-around;
+}
+
+/* Individual Navigation Items */
+.nav-item {
+
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for link */
+    transition: box-shadow 0.3s, transform 0.2s; /* Interactivity transition */
+    border-radius: 5px;
+    overflow: hidden; /* Prevents overflow for hover effects */
+}
+
+/* When hovering over navigation items */
+.nav-item:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Larger shadow on hover */
+    transform: scale(1.05); /* Slight scaling effect */
+}
+
+/* Links inside navigation items */
+.nav-link {
+    display: flex;
+    justify-content: center;
+    padding: 12px;
+    background-color: var(--foreground); /* Muted blue for link background */
+    border-radius: 5px;
+    gap: 20px; /* Spacing between links */
+    color: var(--primary); /* White text for links */
+    font-size: 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Hover effect for links */
+.nav-link:hover {
+    background-color: var(--accent); /* Deep brown for hover background */
+    color: var(--accent-foreground); /* White text for hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Hover shadow effect */
+}
+
+/* Active links */
+.nav-link.active {
+    background-color: var(--secondary); /* Taupe for active links */
+    color: var(--secondary-foreground); /* White text for active links */
+}
+
+/* Placeholder for more interactivity */
+.nav-link:focus {
+    outline: 2px solid var(--ring); /* Taupe focus ring for accessibility */
+}
+
+.browse-link {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    border-color: var(--accent);
+    color-scheme: dark;
+    border: 1px solid;
+    /*background-color: var(--foreground); !* Muted blue for link background *!*/
+    border-radius: 5px;
+    gap: 20px; /* Spacing between links */
+    color: var(--foreground); /* White text for links */
+    margin: 5px;
+    text-decoration: none;
+    font-size: 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
