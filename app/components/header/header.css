@@ -53,12 +53,12 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 /* Individual Navigation Items */
 .nav-item {
-
+    min-width: min-content;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for link */
     transition: box-shadow 0.3s, transform 0.2s; /* Interactivity transition */
     border-radius: 5px;
@@ -75,13 +75,14 @@
 .nav-link {
     display: flex;
     justify-content: center;
-    padding: 12px;
+    padding: 6px;
     background-color: var(--foreground); /* Muted blue for link background */
-    border-radius: 5px;
-    gap: 20px; /* Spacing between links */
+    border-radius: 11px;
+    gap: 10px; /* Spacing between links */
     color: var(--primary); /* White text for links */
-    font-size: 20px;
+    font-size: 18px;
     transition: background-color 0.3s, color 0.3s;
+    min-width: min-content;
 }
 
 /* Hover effect for links */

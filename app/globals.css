@@ -20,7 +20,7 @@ body {
     --secondary-foreground: #ffffff; /* White text on secondary elements */
     --muted: #d3cbc6; /* Soft beige for muted elements */
     --muted-foreground: #4a4a4a; /* Neutral gray for muted text */
-    --accent: rgba(238, 0, 0, 0.82); /* Deep brown for accents */
+    --accent: rgb(51, 114, 249); /* Deep brown for accents */
     --accent-foreground: #ffffff; /* White text on accents */
     --destructive: #b64926; /* Warm reddish-brown for destructive actions */
     --destructive-foreground: #ffffff; /* White text on destructive actions */

@@ -22,8 +22,8 @@ export default function TopBar() {
                     MedicamentLibrary
                 </Link>
                 <div className="actions">
-                    <BrowseButton />
-                    <Button variant="outline" onClick={handleRandomPage} className="max-h-full m-0 flex">
+                    <BrowseButton/>
+                    <Button variant="outline" onClick={handleRandomPage} className="max-h-full m-0 flex hover:text-[var(--accent)]">
                         <Shuffle className="mr-2 h-4 w-4 " />
                         Random Page
                     </Button>

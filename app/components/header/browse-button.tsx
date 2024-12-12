@@ -19,22 +19,15 @@ import {
 } from "@/components/ui/command"
 import {useRouter} from 'next/navigation'
 import Link from "next/link";
-
-const pages = [
-    {value: "home", label: "Home"},
-    {value: "disease/search", label: "Disease Search"},
-    {value: "medicament/search", label: "Medicament Search"},
-    {value: "patient/search", label: "Patient Search"},
-    {value: "organization/search", label: "Organization Search"},
-]
+import {pages} from "@/app/components/header/pages";
 
 export default function BrowseButton() {
-    const [value, setValue] = useState("")
+    const [href, setValue] = useState("")
     const router = useRouter()
 
     const handleSelect = (selectedValue: SetStateAction<string>) => {
         setValue(selectedValue)
-        router.push(`/${selectedValue === "home" ? "" : selectedValue}`)
+        router.push(`${selectedValue === "home" ? "" : selectedValue}`)
     }
 
     return (<Popover>
@@ -42,11 +35,11 @@ export default function BrowseButton() {
                 <Button
                     variant="outline"
                     role="combobox"
-                    aria-expanded={!!value}
-                    className="w-[200px] justify-between"
+                    aria-expanded={!!href}
+                    className="w-[200px] justify-between hover:text-[var(--accent)]"
                 >
-                    {value
-                        ? pages.find((page) => page.value === value)?.label
+                    {href
+                        ? pages.find((page) => page.href === href)?.label
                         : "Browse..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -67,8 +60,9 @@ export default function BrowseButton() {
                         <CommandGroup className="text-[var(--accent)] px-2 py-1 " >
                             {pages.map((page) => (
                                 <CommandItem className="browse-link"
-                                    key={page.value}
-                                    onSelect={() => handleSelect(page.value)}
+
+                                    key={page.href}
+                                    onSelect={() => handleSelect(page.href)}
 
                                     // className="  px-2 py-1 cursor-pointer rounded border border-[var(--foreground)] m-1 transition-colors duration-200 hover:text-[var(--accent)] hover:border-[var(--accent)"
                                 >

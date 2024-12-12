@@ -1,16 +1,15 @@
-'use client'
+'use client';
 
-import {motion} from 'framer-motion'
-import {useEffect, useState} from 'react'
+import React, { useState, useEffect, useCallback , useRef} from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
-import {Input} from "@/components/ui/input"
-import {Button} from "@/components/ui/button"
-import {Badge} from "@/components/ui/badge"
-import {renderDiseaseDetails} from "@/app/components/search/render-disease";
-import {renderMedicamentDetails} from "@/app/components/search/render-medicament";
-import { CopyIcon } from "lucide-react"
+import { motion } from 'framer-motion';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { renderDiseaseDetails } from "@/app/components/search/render-disease";
+import { renderMedicamentDetails } from "@/app/components/search/render-medicament";
+import { CopyIcon } from "lucide-react";
 import {
     Pagination,
     PaginationContent,
@@ -19,24 +18,23 @@ import {
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/pagination";
 import Link from "next/link";
-import {renderOrganizationDetails} from "@/app/components/search/render-organizations";
-import {renderPatientsDetails} from "@/app/components/search/render-patients";
+import { renderOrganizationDetails } from "@/app/components/search/render-organizations";
+import { renderPatientsDetails } from "@/app/components/search/render-patients";
 
 interface SearchResult {
-    id: string
-    name: string
-
-    [key: string]: any
+    id: string;
+    name: string;
+    [key: string]: any;
 }
 
 interface SearchPageProps {
-    entityName: string
-    searchEndpoint: string
+    entityName: string;
+    searchEndpoint: string;
 }
 
-export default function SearchPage({entityName, searchEndpoint}: SearchPageProps) {
+export default function SearchPage({ entityName, searchEndpoint }: SearchPageProps) {
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -48,14 +46,19 @@ export default function SearchPage({entityName, searchEndpoint}: SearchPageProps
     const resultsPerPage = 10;
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const fullUrl = `${apiUrl}${searchEndpoint}`;
-    const handleSearch = async () => {
-        try {
-            // Update the URL in the browser
-            const newUrl = `?query=${searchTerm}&page=${currentPage}`;
-            router.push(newUrl); // Use Next.js router to update the URL
 
-            // Make the API call
-            const response = await fetch(`${fullUrl}?query=${searchTerm}&page=${currentPage}`);
+    // Extract query and page outside useEffect
+    const query = searchParams.get('query') || '';
+    const page = parseInt(searchParams.get('page') || '1', 10);
+
+    // Ref to track last search parameters
+    const lastSearchRef = useRef<{ query: string; page: number }>({ query: '', page: 1 });
+
+    // Define the search function
+    const search = useCallback(async (query: string, page: number) => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(`${fullUrl}?query=${encodeURIComponent(query)}&page=${page}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -63,12 +66,28 @@ export default function SearchPage({entityName, searchEndpoint}: SearchPageProps
             if (typeof data !== 'object' || data === null) {
                 throw new Error('Response data is not a valid JSON object');
             }
-            setSearchResults(data);
+            setSearchResults(data); // Adjust based on your API response structure
         } catch (error) {
             console.error('Error fetching or processing JSON data:', error);
             setSearchResults([]);
+        } finally {
+            setIsLoading(false);
         }
-    };
+    }, [fullUrl]);
+
+    // Handle search submission: update URL with new query and reset page to 1
+    const handleSearch = useCallback(() => {
+        const encodedQuery = encodeURIComponent(searchTerm);
+        router.push(`?query=${encodedQuery}&page=1`);
+    }, [router, searchTerm]);
+
+    // Handle page changes: update URL with current query and new page
+    const handlePageChange = useCallback((page: number) => {
+        const encodedQuery = encodeURIComponent(searchTerm);
+        router.push(`?query=${encodedQuery}&page=${page}`);
+    }, [router, searchTerm]);
+
+    // Render skeleton loaders while fetching data
     const renderSkeletons = () => {
         return [...Array(resultsPerPage)].map((_, index) => (
             <div key={index} className="animate-pulse border-2 p-4 rounded-lg bg-gray-200">
@@ -78,28 +97,30 @@ export default function SearchPage({entityName, searchEndpoint}: SearchPageProps
             </div>
         ));
     };
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false); // Allow animation to kick in
-        }, 300); // 300ms delay before starting the animation
 
-        return () => clearTimeout(timer); // Cleanup
-    }, []);
+    // useEffect to handle search on URL changes (including initial load)
     useEffect(() => {
-        const query = searchParams.get('query') || '';
-        const page = parseInt(searchParams.get('page') || '1', 10);
-
         if (query) {
-            setSearchTerm(query);
-            setCurrentPage(page);
-            handleSearch();
+            // Check if the current query and page are different from the last search
+            if (lastSearchRef.current.query !== query || lastSearchRef.current.page !== page) {
+                setSearchTerm(query);
+                setCurrentPage(page);
+                search(query, page);
+                // Update the ref with the current search parameters
+                lastSearchRef.current = { query, page };
+            }
+        } else {
+            // If no query, reset the results
+            setSearchTerm('');
+            setCurrentPage(1);
+            setSearchResults([]);
+            setIsLoading(false);
         }
-    }, [searchParams]);
+    }, [query, page, search]);
 
+    const totalPages = Math.ceil(searchResults.length / resultsPerPage);
 
-
-    const totalPages = Math.ceil(searchResults.length / resultsPerPage)
-
+    // Function to render details based on entity type
     const renderEntityDetails = (result: SearchResult) => {
         switch (entityName) {
             case 'Disease':
@@ -111,68 +132,74 @@ export default function SearchPage({entityName, searchEndpoint}: SearchPageProps
             case 'Patient':
                 return renderPatientsDetails(result);
             default:
-                return null
+                return null;
         }
-    }
+    };
+
     const buttonLinkStyle = "hover:text-[var(--accent)] border-2 border-[var(--background)] select-none";
+
+    // Function to render pagination items
     const renderPaginationItems = () => {
-        const paginationItems = []
+        const paginationItems = [];
 
         // Define pagination range
-        const startPage = Math.max(1, currentPage - 2)
-        const endPage = Math.min(totalPages, currentPage + 2)
+        const startPage = Math.max(1, currentPage - 2);
+        const endPage = Math.min(totalPages, currentPage + 2);
 
         if (startPage > 1) {
             paginationItems.push(
                 <PaginationItem key="start" className="cursor-pointer select-none">
                     <PaginationLink
                         className={buttonLinkStyle}
-                        onClick={() => setCurrentPage(1)}>
+                        onClick={() => handlePageChange(1)}
+                    >
                         <span>1</span>
-
                     </PaginationLink>
                 </PaginationItem>
-            )
+            );
             if (startPage > 2) {
-                paginationItems.push(<PaginationEllipsis key="start-ellipsis select-none" />)
+                paginationItems.push(<PaginationEllipsis key="start-ellipsis" />);
             }
         }
 
         for (let page = startPage; page <= endPage; page++) {
             paginationItems.push(
-                <PaginationItem key={page} className = "cursor-pointer select-none" >
+                <PaginationItem key={page} className="cursor-pointer select-none">
                     <PaginationLink
-                        onClick={() => setCurrentPage(page)}
-                        className={currentPage === page ? `${buttonLinkStyle} font-bold text-blue-600` : `${buttonLinkStyle}`}
+                        onClick={() => handlePageChange(page)}
+                        className={currentPage === page ? `${buttonLinkStyle} font-bold text-white bg-green-950` : `${buttonLinkStyle}`}
                     >
                         <span>{page}</span>
                     </PaginationLink>
                 </PaginationItem>
-            )
+            );
         }
 
         if (endPage < totalPages) {
             if (endPage < totalPages - 1) {
-                paginationItems.push(<PaginationEllipsis key="end-ellipsis" />)
+                paginationItems.push(<PaginationEllipsis key="end-ellipsis" />);
             }
             paginationItems.push(
-                <PaginationItem key="end" className = "cursor-pointer select-none">
-                    <PaginationLink onClick={() => setCurrentPage(totalPages)} className={buttonLinkStyle}>
+                <PaginationItem key="end" className="cursor-pointer select-none">
+                    <PaginationLink
+                        onClick={() => handlePageChange(totalPages)}
+                        className={buttonLinkStyle}
+                    >
                         <span>{totalPages}</span>
                     </PaginationLink>
                 </PaginationItem>
-            )
+            );
         }
 
-        return paginationItems
-    }
+        return paginationItems;
+    };
 
     return (
         <motion.div
             className="container mx-auto p-6 space-y-8"
-            initial={{opacity: 0, y: 20}}
-            animate={{opacity: 1, y: 0}}
-            transition={{duration: 0.5}}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
         >
             <h2 className="text-3xl font-bold mb-6">{entityName} Search</h2>
             <div className="flex mb-6">
@@ -183,11 +210,11 @@ export default function SearchPage({entityName, searchEndpoint}: SearchPageProps
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyDown={(event) => {
                         if (event.key === 'Enter') {
-                            event.preventDefault(); // Prevent default form submission (if applicable)
+                            event.preventDefault(); // Prevent default form submission
                             handleSearch();
                         }
                     }}
-                    className="mr-2 flex-grow border-2 border-[var(--background)] "
+                    className="mr-2 flex-grow border-2 border-[var(--background)]"
                 />
                 <Button className={buttonLinkStyle} onClick={handleSearch}>
                     Search
@@ -195,9 +222,9 @@ export default function SearchPage({entityName, searchEndpoint}: SearchPageProps
             </div>
 
             <motion.div
-                initial={{opacity: 0}}
-                animate={{opacity: isLoading ? 0 : 1}} // Fade in once data is loaded
-                transition={{duration: 1}} // You can adjust the timing
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isLoading ? 0 : 1 }} // Fade in once data is loaded
+                transition={{ duration: 0.7 }} // Adjust timing as needed
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
             >
                 {isLoading
@@ -207,11 +234,11 @@ export default function SearchPage({entityName, searchEndpoint}: SearchPageProps
                         .map((result, index) => (
                             <motion.div
                                 key={result.id}
-                                initial={{opacity: 0, y: 20}}
-                                animate={{opacity: 1, y: 0}}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
                                 transition={{
                                     duration: 0.5,
-                                    delay: index * 0.1, // Staggered effect for each card
+                                    delay: index * 0.05, // Staggered effect for each card
                                 }}
                                 className="card hover:shadow-lg transition-shadow duration-400 border-2 rounded-2xl"
                             >
@@ -225,16 +252,12 @@ export default function SearchPage({entityName, searchEndpoint}: SearchPageProps
                                         <p className="text-sm text-gray-600">ID: {result.id}</p>
                                         <Button
                                             variant="unhover"
-                                            onClick={(e) => {
+                                            onClick={() => {
                                                 navigator.clipboard.writeText(result.id);
-                                                const button = e.currentTarget;
-                                                button.classList.add('bg-[var(--muted-foreground)]');
-                                                setTimeout(() => {
-                                                    button.classList.remove('bg-[var(--muted-foreground)]');
-                                                }, 220);
+                                                // Optional: Provide user feedback here (e.g., toast notification)
                                             }}
                                         >
-                                            <CopyIcon className="w-4 h-4"/>
+                                            <CopyIcon className="w-4 h-4" />
                                         </Button>
                                     </div>
 
@@ -246,29 +269,33 @@ export default function SearchPage({entityName, searchEndpoint}: SearchPageProps
                         ))}
             </motion.div>
 
-            <motion.div className="flex justify-center space-x-2" initial={{opacity: 0}}
-                        animate={{opacity: isLoading ? 0 : 1}} // Fade in once data is loaded
-                        transition={{duration: 1}}>
-                <Pagination>
-                    <PaginationContent>
-                        <PaginationItem className="cursor-pointer select-none">
-                            <PaginationPrevious
-                                className={buttonLinkStyle}
-                                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                            />
-                        </PaginationItem>
-                        {renderPaginationItems()}
-                        <PaginationItem className="cursor-pointer select-none">
-                            <PaginationNext
-                                className={buttonLinkStyle}
-                                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                            />
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-            </motion.div>
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <motion.div
+                    className="flex justify-center space-x-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isLoading ? 0 : 1 }} // Fade in once data is loaded
+                    transition={{ duration: 1 }}
+                >
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem className="cursor-pointer select-none">
+                                <PaginationPrevious
+                                    className={buttonLinkStyle}
+                                    onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
+                                />
+                            </PaginationItem>
+                            {renderPaginationItems()}
+                            <PaginationItem className="cursor-pointer select-none">
+                                <PaginationNext
+                                    className={buttonLinkStyle}
+                                    onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
+                                />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </motion.div>
+            )}
         </motion.div>
-
     )
 }
-
