@@ -63,8 +63,8 @@ const features = [
 export default function Home() {
   return (
       <div className="container mx-auto p-4 flex-col h-dvh">
-          <h2 className="text-center text-2xl font-bold mb-4">Welcome to MedicamentLibrary</h2>
-          <p className="mb-8">Your comprehensive resource for medicaments, diseases, patients, and organizations.</p>
+          <h2 className="text-center text-8xl font-bold mb-4">Welcome to MedicamentLibrary</h2>
+          <p className="text-center text-wrap text-4xl mb-8">Your comprehensive resource for medicaments, diseases, patients, and organizations.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
               <div
                   className="relative bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden"

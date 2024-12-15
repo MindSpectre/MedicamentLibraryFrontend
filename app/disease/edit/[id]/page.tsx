@@ -23,7 +23,7 @@ export default function DiseaseManagementPage() {
 
     const fetchDisease = async (diseaseId: string | string[]) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        const fullUrl = `${apiUrl}/wiki/diseases/${diseaseId}`;
+        const fullUrl = `${apiUrl}/wiki/disease/${diseaseId}`;
         try {
             const response = await fetch(fullUrl);
             if (!response.ok) {
@@ -45,7 +45,7 @@ export default function DiseaseManagementPage() {
     const handleSave = async (updatedDisease: Disease) => {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const url = `/wiki/diseases/${id}`;
+            const url = `/wiki/disease/${id}`;
             const fullUrl = `${apiUrl}${url}`;
             const response = await fetch(fullUrl, {
                 method: 'PUT',

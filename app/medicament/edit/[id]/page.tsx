@@ -23,7 +23,7 @@ export default function MedicamentManagementPage() {
 
     const fetchMedicament = async (medicamentId: string | string[]) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        const fullUrl = `${apiUrl}/wiki/medicaments/${medicamentId}`;
+        const fullUrl = `${apiUrl}/wiki/medicament/${medicamentId}`;
         try {
             const response = await fetch(fullUrl);
             if (!response.ok) {
@@ -45,7 +45,7 @@ export default function MedicamentManagementPage() {
     const handleSave = async (updatedMedicament: Medicament) => {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const url = `/wiki/medicaments/${id}`;
+            const url = `/wiki/medicament/${id}`;
             const fullUrl = `${apiUrl}${url}`;
             const response = await fetch(fullUrl, {
                 method: 'PUT',

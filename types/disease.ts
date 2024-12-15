@@ -15,7 +15,7 @@ export interface DiseaseProperties {
 }
 
 export interface Disease {
-    id?: string;
+    id: string;
     name: string;
     is_infectious: boolean;
     type: string;

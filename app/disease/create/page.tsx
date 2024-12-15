@@ -10,7 +10,7 @@ export default function AddDiseasePage() {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-            const url = '/api/wiki/diseases/'
+            const url = '/api/wiki/disease/'
             const fullUrl = `${apiUrl}${url}`;
             const method = 'POST'
             const transformedData = transformDiseaseData(updatedDisease)

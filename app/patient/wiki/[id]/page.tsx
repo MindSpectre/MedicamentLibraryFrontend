@@ -12,6 +12,8 @@ import {Button} from "@/components/ui/button";
 import {EditButton} from "@/components/ui/edit-button";
 import {DeleteButton} from "@/components/ui/delete-button";
 import {ModernButton} from "@/components/ui/modern-button";
+import {useRouter} from "next/navigation";
+import {handleRemovePage, handleSharePage} from "@/app/components/description-card";
 
 function formatDate(day: number, month: number, year: number): string {
     // Simple date formatting for the given birth date
@@ -20,7 +22,7 @@ function formatDate(day: number, month: number, year: number): string {
 
 export default function PatientViewPage() {
     const { id } = useParams()
-
+    const router = useRouter()
     const [patient, setPatient] = useState<Patient | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -33,19 +35,12 @@ export default function PatientViewPage() {
         }
     }, [id])
     const handleEditPage = () => {
-
+        router.push(`/patient/edit/${id}`)
     }
 
-    const handleSharePage = () => {
-        // Implement sharing logic here if needed
-    }
-
-    const handleRemovePage = () => {
-        // Implement remove logic here if needed
-    }
     const fetchPatient = useCallback(async (patientId: string) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL
-        const fullUrl = `${apiUrl}/wiki/patients/${patientId}`
+        const fullUrl = `${apiUrl}/wiki/patient/${patientId}`
         try {
             const response = await fetch(fullUrl)
             if (!response.ok) {
@@ -94,9 +89,9 @@ export default function PatientViewPage() {
             <Card className="flex-row flex">
                 <div className="flex-col w-3/4 flex">
                     <CardHeader>
-                        <CardTitle className="text-xl font-bold">{patient.name}</CardTitle>
+                        <CardTitle className="text-2xl font-bold">{patient.name}</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-2">
+                    <CardContent className="space-y-2 text-xl">
                         <div>
                             <span className="font-semibold">ID:</span> {patient.id}
                         </div>
@@ -121,8 +116,8 @@ export default function PatientViewPage() {
                         <Share/>
                     </Button>
                     <EditButton onConfirm={handleEditPage}/>
-                    <DeleteButton onConfirm={handleRemovePage}/>
-                    <ModernButton className="w-1/2 h-1/5 text-xs mt-2 min-w-min" onConfirm={handleRemovePage} text={"Treat manager"}/>
+                    <DeleteButton onConfirm={() => handleRemovePage("patient", patient.id)} />
+                    <ModernButton className="text-xs mt-10 min-w-min" onConfirm={handleSharePage} text={"Treat manager"}/>
                 </div>
             </Card>
 
@@ -137,11 +132,11 @@ export default function PatientViewPage() {
             {patient.properties.medical_history && patient.properties.medical_history.length > 0 && (
                 <Card>
                     <CardHeader>
-                        <CardTitle>Medical History</CardTitle>
+                        <CardTitle className="text-2xl">Medical History</CardTitle>
                     </CardHeader>
                     <CardContent>
                         {patient.properties.medical_history.map((entry, index) => (
-                            <div key={index} className="border-b last:border-b-0 py-2">
+                            <div key={index} className="border-b last:border-b-0 py-2 text-xl">
                                 <div><span className="font-semibold">Disease ID:</span> {entry.disease_id}</div>
                                 <div><span className="font-semibold">Start Date:</span> {entry.start_date}</div>
                                 <div><span className="font-semibold">End Date:</span> {entry.end_date}</div>

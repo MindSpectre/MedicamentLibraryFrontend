@@ -17,6 +17,7 @@ export interface MedicamentProperties {
 }
 
 export interface Medicament {
+    id: string;
     approval_number: string;
     approval_status: string;
     atc_code: string;

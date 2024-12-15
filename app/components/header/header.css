@@ -75,7 +75,7 @@
 .nav-link {
     display: flex;
     justify-content: center;
-    padding: 6px;
+    padding: 10px;
     background-color: var(--foreground); /* Muted blue for link background */
     border-radius: 11px;
     gap: 10px; /* Spacing between links */

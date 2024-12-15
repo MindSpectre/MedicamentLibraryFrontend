@@ -12,6 +12,7 @@ import { Disease } from '@/types/disease' // Uses the Disease interface from you
 import SymptomsList from '@/app/components/forms/diseases/symptoms-list'
 import PropertyList from '@/app/components/property-list'
 import {EditButton} from "@/components/ui/edit-button";
+import {handleRemovePage, handleSharePage} from "@/app/components/description-card";
 
 export default function DiseaseViewPage() {
     const { id } = useParams()
@@ -31,7 +32,7 @@ export default function DiseaseViewPage() {
 
     const fetchDisease = useCallback(async (diseaseId: string) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL
-        const fullUrl = `${apiUrl}/wiki/diseases/${diseaseId}`
+        const fullUrl = `${apiUrl}/wiki/disease/${diseaseId}`
         try {
             const response = await fetch(fullUrl)
             if (!response.ok) {
@@ -50,13 +51,6 @@ export default function DiseaseViewPage() {
         router.push(`/disease/edit/${id}`)
     }
 
-    const handleSharePage = () => {
-        // Implement sharing logic here if needed
-    }
-
-    const handleRemovePage = () => {
-        // Implement remove logic here if needed
-    }
 
     if (loading) {
         return (
@@ -111,7 +105,7 @@ export default function DiseaseViewPage() {
                         <Share />
                     </Button>
                     <EditButton onConfirm={handleEditPage}/>
-                    <DeleteButton onConfirm={handleRemovePage}/>
+                    <DeleteButton onConfirm={() => handleRemovePage("disease", disease.id)} />
                 </div>
             </Card>
 

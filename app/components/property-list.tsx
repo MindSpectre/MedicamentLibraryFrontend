@@ -17,7 +17,7 @@ export default function PropertyList({ title, items }: PropertyListProps) {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>{title}</CardTitle>
+                <CardTitle className="text-2xl">{title}</CardTitle>
             </CardHeader>
             <CardContent>
                 <motion.div
@@ -33,7 +33,7 @@ export default function PropertyList({ title, items }: PropertyListProps) {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.3, delay: index * 0.05 }}
                         >
-                            <Badge variant="outline">{item}</Badge>
+                            <Badge className="text-xl" variant="outline">{item}</Badge>
                         </motion.div>
                     ))}
                 </motion.div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter} from 'next/navigation'
 import { motion } from 'framer-motion'
 import {Loader2, Share} from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,14 +9,14 @@ import { Badge } from "@/components/ui/badge"
 import { Medicament } from '@/types/medicament'
 import IngredientsList from '@/app/components/forms/medicaments/ingredients-list'   // Ensure correct import paths
 import PropertyList from '@/app/components/property-list'
-import DescriptionCard from '@/app/components/description-card'
+import DescriptionCard, {handleRemovePage, handleSharePage} from '@/app/components/description-card'
 import {Button} from "@/components/ui/button";
 import {EditButton} from "@/components/ui/edit-button";
 import {DeleteButton} from "@/components/ui/delete-button";
 
 export default function MedicamentViewPage() {
     const { id } = useParams()
-
+    const router = useRouter()
     const [medicament, setMedicament] = useState<Medicament | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -29,19 +29,12 @@ export default function MedicamentViewPage() {
         }
     }, [id])
     const handleEditPage = () => {
-
+        router.push(`/medicament/edit/${id}`)
     }
 
-    const handleSharePage = () => {
-        // Implement sharing logic here if needed
-    }
-
-    const handleRemovePage = () => {
-        // Implement remove logic here if needed
-    }
     const fetchMedicament = useCallback(async (medicamentId: string | string[]) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL
-        const fullUrl = `${apiUrl}/wiki/medicaments/${medicamentId}`
+        const fullUrl = `${apiUrl}/wiki/medicament/${medicamentId}`
         try {
             const response = await fetch(fullUrl)
             if (!response.ok) {
@@ -125,7 +118,7 @@ export default function MedicamentViewPage() {
                         <Share/>
                     </Button>
                     <EditButton onConfirm={handleEditPage}/>
-                    <DeleteButton onConfirm={handleRemovePage}/>
+                    <DeleteButton onConfirm={() => handleRemovePage("medicament", medicament.id)} />
                 </div>
             </Card>
 

@@ -27,6 +27,7 @@ interface SearchResult {
     id: string;
     name: string;
     [key: string]: any;
+
 }
 
 interface SearchPageProps {
@@ -201,7 +202,7 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
         >
-            <h2 className="text-3xl font-bold mb-6">{entityName} Search</h2>
+            <h2 className="text-6xl font-bold mb-6">{entityName} Search</h2>
             <div className="flex mb-6">
                 <Input
                     type="text"
@@ -216,7 +217,7 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
                     }}
                     className="mr-2 flex-grow border-2 border-[var(--background)]"
                 />
-                <Button className={buttonLinkStyle} onClick={handleSearch}>
+                <Button className="hover:bg-[var(--accent)] hover:text-[var(--foreground)] border-2 border-[var(--background)] select-none" onClick={handleSearch}>
                     Search
                 </Button>
             </div>

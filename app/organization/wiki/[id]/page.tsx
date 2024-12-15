@@ -34,7 +34,7 @@ export default function OrganizationViewPage() {
 
     const fetchOrganization = useCallback(async (organizationId: string) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL
-        const fullUrl = `${apiUrl}/wiki/organizations/${organizationId}`
+        const fullUrl = `${apiUrl}/wiki/organization/${organizationId}`
         try {
             const response = await fetch(fullUrl)
             if (!response.ok) {

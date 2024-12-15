@@ -23,7 +23,7 @@ export default function OrganizationManagementPage() {
 
     const fetchOrganization = async (organizationId: string | string[]) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        const fullUrl = `${apiUrl}/wiki/organizations/${organizationId}`;
+        const fullUrl = `${apiUrl}/wiki/organization/${organizationId}`;
         try {
             const response = await fetch(fullUrl);
             if (!response.ok) {
@@ -45,7 +45,7 @@ export default function OrganizationManagementPage() {
     const handleSave = async (updatedOrganization: Organization) => {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            const url = `/wiki/organizations/${id}`;
+            const url = `/wiki/organization/${id}`;
             const fullUrl = `${apiUrl}${url}`;
             const response = await fetch(fullUrl, {
                 method: 'PUT',
