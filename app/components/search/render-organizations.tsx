@@ -1,5 +1,4 @@
-import {Badge} from "@/components/ui/badge";
-
+'use client'
 interface SearchResult {
     id: string
     name: string

@@ -1,3 +1,4 @@
+'use client'
 interface SearchResult {
     id: string
     name: string

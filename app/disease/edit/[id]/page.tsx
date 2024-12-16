@@ -8,7 +8,7 @@ import { toast } from "sonner"
 import { Disease } from '@/types/disease' // Uses the Disease interface from your types directory
 export default function DiseaseManagementPage() {
     const { id } = useParams();
-    const [disease, setDisease] = useState<Disease | null>(null);
+    const [disease, setDisease] = useState<Disease>();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string>('');

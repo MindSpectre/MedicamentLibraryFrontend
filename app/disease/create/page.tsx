@@ -6,6 +6,7 @@ import {useState} from "react";
 export default function AddDiseasePage() {
     const [error, setError] = useState(null)
     const [successMessage, setSuccessMessage] = useState('')
+    // @ts-ignore
     const handleSave = async (updatedDisease) => {
         try {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -32,6 +33,7 @@ export default function AddDiseasePage() {
             window.history.pushState({}, '', `/disease-management/${newDisease.id}`)
 
         } catch (err) {
+            // @ts-ignore
             setError(err.message)
         }
     }
@@ -50,7 +52,7 @@ export default function AddDiseasePage() {
                     <AlertDescription>{successMessage}</AlertDescription>
                 </Alert>
             )}
-            <DiseaseForm initialData={null} onSave={handleSave}/>
+            <DiseaseForm initialData={undefined} onSave={handleSave}/>
         </div>
     )
 }

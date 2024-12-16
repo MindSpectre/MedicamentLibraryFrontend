@@ -30,7 +30,7 @@ export default function DiseaseViewPage() {
         }
     }, [id])
 
-    const fetchDisease = useCallback(async (diseaseId: string) => {
+    const fetchDisease = useCallback(async (diseaseId: string | string[]) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL
         const fullUrl = `${apiUrl}/wiki/disease/${diseaseId}`
         try {

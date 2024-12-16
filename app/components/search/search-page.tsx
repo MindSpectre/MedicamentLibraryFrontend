@@ -1,15 +1,12 @@
 'use client';
 
-import React, { useState, useEffect, useCallback , useRef} from 'react';
+import React, { useState, useEffect, useCallback , useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { renderDiseaseDetails } from "@/app/components/search/render-disease";
-import { renderMedicamentDetails } from "@/app/components/search/render-medicament";
-import { CopyIcon } from "lucide-react";
+import { CopyIcon, Loader } from "lucide-react";
 import {
     Pagination,
     PaginationContent,
@@ -20,6 +17,8 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import Link from "next/link";
+import { renderDiseaseDetails } from "@/app/components/search/render-disease";
+import { renderMedicamentDetails } from "@/app/components/search/render-medicament";
 import { renderOrganizationDetails } from "@/app/components/search/render-organizations";
 import { renderPatientsDetails } from "@/app/components/search/render-patients";
 
@@ -27,7 +26,6 @@ interface SearchResult {
     id: string;
     name: string;
     [key: string]: any;
-
 }
 
 interface SearchPageProps {
@@ -35,8 +33,9 @@ interface SearchPageProps {
     searchEndpoint: string;
 }
 
-export default function SearchPage({ entityName, searchEndpoint }: SearchPageProps) {
-
+// Separate component for the search logic and rendering.
+// This component uses useSearchParams() and must be inside a Suspense boundary.
+function SearchContent({ entityName, searchEndpoint }: SearchPageProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -44,18 +43,14 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
+
     const resultsPerPage = 10;
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const fullUrl = `${apiUrl}${searchEndpoint}`;
-
-    // Extract query and page outside useEffect
     const query = searchParams.get('query') || '';
     const page = parseInt(searchParams.get('page') || '1', 10);
-
-    // Ref to track last search parameters
     const lastSearchRef = useRef<{ query: string; page: number }>({ query: '', page: 1 });
 
-    // Define the search function
     const search = useCallback(async (query: string, page: number) => {
         setIsLoading(true);
         try {
@@ -67,7 +62,7 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
             if (typeof data !== 'object' || data === null) {
                 throw new Error('Response data is not a valid JSON object');
             }
-            setSearchResults(data); // Adjust based on your API response structure
+            setSearchResults(data);
         } catch (error) {
             console.error('Error fetching or processing JSON data:', error);
             setSearchResults([]);
@@ -76,42 +71,25 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
         }
     }, [fullUrl]);
 
-    // Handle search submission: update URL with new query and reset page to 1
     const handleSearch = useCallback(() => {
         const encodedQuery = encodeURIComponent(searchTerm);
         router.push(`?query=${encodedQuery}&page=1`);
     }, [router, searchTerm]);
 
-    // Handle page changes: update URL with current query and new page
     const handlePageChange = useCallback((page: number) => {
         const encodedQuery = encodeURIComponent(searchTerm);
         router.push(`?query=${encodedQuery}&page=${page}`);
     }, [router, searchTerm]);
 
-    // Render skeleton loaders while fetching data
-    const renderSkeletons = () => {
-        return [...Array(resultsPerPage)].map((_, index) => (
-            <div key={index} className="animate-pulse border-2 p-4 rounded-lg bg-gray-200">
-                <div className="h-4 bg-gray-300 mb-4 rounded w-2/3"></div>
-                <div className="h-3 bg-gray-300 rounded mb-2"></div>
-                <div className="h-3 bg-gray-300 rounded mb-2"></div>
-            </div>
-        ));
-    };
-
-    // useEffect to handle search on URL changes (including initial load)
     useEffect(() => {
         if (query) {
-            // Check if the current query and page are different from the last search
             if (lastSearchRef.current.query !== query || lastSearchRef.current.page !== page) {
                 setSearchTerm(query);
                 setCurrentPage(page);
                 search(query, page);
-                // Update the ref with the current search parameters
                 lastSearchRef.current = { query, page };
             }
         } else {
-            // If no query, reset the results
             setSearchTerm('');
             setCurrentPage(1);
             setSearchResults([]);
@@ -121,7 +99,6 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
 
     const totalPages = Math.ceil(searchResults.length / resultsPerPage);
 
-    // Function to render details based on entity type
     const renderEntityDetails = (result: SearchResult) => {
         switch (entityName) {
             case 'Disease':
@@ -137,13 +114,20 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
         }
     };
 
+    const renderSkeletons = () => {
+        return [...Array(resultsPerPage)].map((_, index) => (
+            <div key={index} className="animate-pulse border-2 p-4 rounded-lg bg-gray-200">
+                <div className="h-4 bg-gray-300 mb-4 rounded w-2/3"></div>
+                <div className="h-3 bg-gray-300 rounded mb-2"></div>
+                <div className="h-3 bg-gray-300 rounded mb-2"></div>
+            </div>
+        ));
+    };
+
     const buttonLinkStyle = "hover:text-[var(--accent)] border-2 border-[var(--background)] select-none";
 
-    // Function to render pagination items
     const renderPaginationItems = () => {
         const paginationItems = [];
-
-        // Define pagination range
         const startPage = Math.max(1, currentPage - 2);
         const endPage = Math.min(totalPages, currentPage + 2);
 
@@ -163,14 +147,14 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
             }
         }
 
-        for (let page = startPage; page <= endPage; page++) {
+        for (let p = startPage; p <= endPage; p++) {
             paginationItems.push(
-                <PaginationItem key={page} className="cursor-pointer select-none">
+                <PaginationItem key={p} className="cursor-pointer select-none">
                     <PaginationLink
-                        onClick={() => handlePageChange(page)}
-                        className={currentPage === page ? `${buttonLinkStyle} font-bold text-white bg-green-950` : `${buttonLinkStyle}`}
+                        onClick={() => handlePageChange(p)}
+                        className={currentPage === p ? `${buttonLinkStyle} font-bold text-white bg-green-950` : `${buttonLinkStyle}`}
                     >
-                        <span>{page}</span>
+                        <span>{p}</span>
                     </PaginationLink>
                 </PaginationItem>
             );
@@ -211,25 +195,27 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyDown={(event) => {
                         if (event.key === 'Enter') {
-                            event.preventDefault(); // Prevent default form submission
+                            event.preventDefault();
                             handleSearch();
                         }
                     }}
                     className="mr-2 flex-grow border-2 border-[var(--background)]"
                 />
-                <Button className="hover:bg-[var(--accent)] hover:text-[var(--foreground)] border-2 border-[var(--background)] select-none" onClick={handleSearch}>
+                <Button
+                    className="hover:bg-[var(--accent)] hover:text-[var(--foreground)] border-2 border-[var(--background)] select-none"
+                    onClick={handleSearch}>
                     Search
                 </Button>
             </div>
 
             <motion.div
                 initial={{ opacity: 0 }}
-                animate={{ opacity: isLoading ? 0 : 1 }} // Fade in once data is loaded
-                transition={{ duration: 0.7 }} // Adjust timing as needed
+                animate={{ opacity: isLoading ? 0 : 1 }}
+                transition={{ duration: 0.7 }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
             >
                 {isLoading
-                    ? renderSkeletons() // Display skeleton loaders while data is loading
+                    ? renderSkeletons()
                     : searchResults
                         .slice((currentPage - 1) * resultsPerPage, currentPage * resultsPerPage)
                         .map((result, index) => (
@@ -239,7 +225,7 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{
                                     duration: 0.5,
-                                    delay: index * 0.05, // Staggered effect for each card
+                                    delay: index * 0.05,
                                 }}
                                 className="card hover:shadow-lg transition-shadow duration-400 border-2 rounded-2xl"
                             >
@@ -255,7 +241,6 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
                                             variant="unhover"
                                             onClick={() => {
                                                 navigator.clipboard.writeText(result.id);
-                                                // Optional: Provide user feedback here (e.g., toast notification)
                                             }}
                                         >
                                             <CopyIcon className="w-4 h-4" />
@@ -270,12 +255,11 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
                         ))}
             </motion.div>
 
-            {/* Pagination Controls */}
             {totalPages > 1 && (
                 <motion.div
                     className="flex justify-center space-x-2"
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: isLoading ? 0 : 1 }} // Fade in once data is loaded
+                    animate={{ opacity: isLoading ? 0 : 1 }}
                     transition={{ duration: 1 }}
                 >
                     <Pagination>
@@ -298,5 +282,13 @@ export default function SearchPage({ entityName, searchEndpoint }: SearchPagePro
                 </motion.div>
             )}
         </motion.div>
-    )
+    );
+}
+
+export default function SearchPage(props: SearchPageProps) {
+    return (
+        <Suspense fallback={<Loader />}>
+            <SearchContent {...props} />
+        </Suspense>
+    );
 }

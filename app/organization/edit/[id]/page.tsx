@@ -8,7 +8,7 @@ import { Organization } from '@/types/organization'
 import {OrganizationForm} from "@/app/components/forms/organizations/organization-form"; // Uses the Organization interface from your types directory
 export default function OrganizationManagementPage() {
     const { id } = useParams();
-    const [organization, setOrganization] = useState<Organization | null>(null);
+    const [organization, setOrganization] = useState<Organization>();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string>('');

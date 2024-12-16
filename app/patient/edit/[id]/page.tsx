@@ -80,17 +80,20 @@ export default function TreatmentManager() {
         }
     };
 
+    // @ts-ignore
     const handleMedInputChange = (e) => {
         const val = e.target.value;
         setNewMed(val);
         if (val.length > 0) {
             const suggestions = medicationSuggestions.filter(m => m.toLowerCase().includes(val.toLowerCase()));
+            // @ts-ignore
             setFilteredSuggestions(suggestions);
         } else {
             setFilteredSuggestions([]);
         }
     };
 
+    // @ts-ignore
     const handleMedSuggestionClick = (suggestion) => {
         setNewMed(suggestion);
         setFilteredSuggestions([]);

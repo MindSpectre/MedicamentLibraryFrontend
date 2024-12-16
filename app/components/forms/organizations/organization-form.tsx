@@ -11,6 +11,7 @@ import { Plus, X } from 'lucide-react'
 import SaveButton from "@/components/ui/save-button"
 import { Organization, OrganizationFormProps, License } from '@/types/organization'
 
+// @ts-ignore
 export function OrganizationForm({ initialData, onSave }: OrganizationFormProps) {
     const [formData, setFormData] = useState<Organization>(initialData || {
         contact_details: '',

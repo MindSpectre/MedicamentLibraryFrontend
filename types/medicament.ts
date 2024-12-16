@@ -22,7 +22,7 @@ export interface Medicament {
     approval_status: string;
     atc_code: string;
     name: string;
-    prescription: string; // "False" or "True"
+    prescription: boolean; // "False" or "True"
     properties: MedicamentProperties;
     type: string;
 }

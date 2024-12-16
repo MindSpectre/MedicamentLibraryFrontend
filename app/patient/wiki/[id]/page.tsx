@@ -38,7 +38,7 @@ export default function PatientViewPage() {
         router.push(`/patient/edit/${id}`)
     }
 
-    const fetchPatient = useCallback(async (patientId: string) => {
+    const fetchPatient = useCallback(async (patientId: string | string[]) => {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL
         const fullUrl = `${apiUrl}/wiki/patient/${patientId}`
         try {

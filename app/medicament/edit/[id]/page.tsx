@@ -8,7 +8,7 @@ import { Medicament } from '@/types/medicament'
 import {MedicamentForm} from "@/app/components/forms/medicaments/medicament-form"; // Uses the Medicament interface from your types directory
 export default function MedicamentManagementPage() {
     const { id } = useParams();
-    const [medicament, setMedicament] = useState<Medicament | null>(null);
+    const [medicament, setMedicament] = useState<Medicament>();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string>('');

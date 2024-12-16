@@ -31,7 +31,7 @@ export const handleRemovePage = async (type: string, id: string) => {
         const data = await response.json(); // Parse the response if there's a body
         console.log('Delete successful:', data);
     } catch (error) {
-        console.error('Failed to remove page:', error.message);
+        console.error('Failed to remove page:');
     }
 };
 export default function DescriptionCard({ title, description }: DescriptionCardProps) {
