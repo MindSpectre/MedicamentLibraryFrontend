@@ -41,7 +41,7 @@ export default function Home() {
 
     const handleSignup = async () => {
         try {
-            const response = await fetch(`${apiUrl}/auth/signup/`, {
+            const response = await fetch(`${apiUrl}/auth/signup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -55,17 +55,10 @@ function SearchContent({ entityName, searchEndpoint }: SearchPageProps) {
         setIsLoading(true);
         try {
             const response = await fetch(`${fullUrl}?query=${encodeURIComponent(query)}&page=${page}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
             const data = await response.json();
-            if (typeof data !== 'object' || data === null) {
-                throw new Error('Response data is not a valid JSON object');
-            }
             setSearchResults(data);
         } catch (error) {
             console.error('Error fetching or processing JSON data:', error);
-            setSearchResults([]);
         } finally {
             setIsLoading(false);
         }
@@ -86,18 +79,12 @@ function SearchContent({ entityName, searchEndpoint }: SearchPageProps) {
             if (lastSearchRef.current.query !== query || lastSearchRef.current.page !== page) {
                 setSearchTerm(query);
                 setCurrentPage(page);
-                search(query, page);
-                lastSearchRef.current = { query, page };
+                search(query, page).then(r =>lastSearchRef.current = { query, page });
             }
-        } else {
-            setSearchTerm('');
-            setCurrentPage(1);
-            setSearchResults([]);
-            setIsLoading(false);
         }
     }, [query, page, search]);
 
-    const totalPages = Math.ceil(searchResults.length / resultsPerPage);
+    const totalPages = 10;
 
     const renderEntityDetails = (result: SearchResult) => {
         switch (entityName) {
@@ -211,13 +198,12 @@ function SearchContent({ entityName, searchEndpoint }: SearchPageProps) {
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isLoading ? 0 : 1 }}
-                transition={{ duration: 0.7 }}
+                transition={{ duration: 0.5 }}
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"
             >
                 {isLoading
                     ? renderSkeletons()
                     : searchResults
-                        .slice((currentPage - 1) * resultsPerPage, currentPage * resultsPerPage)
                         .map((result, index) => (
                             <motion.div
                                 key={result.id}
@@ -260,7 +246,7 @@ function SearchContent({ entityName, searchEndpoint }: SearchPageProps) {
                     className="flex justify-center space-x-2"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: isLoading ? 0 : 1 }}
-                    transition={{ duration: 1 }}
+                    transition={{ duration: 0.3 }}
                 >
                     <Pagination>
                         <PaginationContent>

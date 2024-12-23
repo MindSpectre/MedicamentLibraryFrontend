@@ -28,6 +28,6 @@ export interface Patient {
     birth_date: BirthDate;
     gender: string;
     id: string;
-    name: string;
+    personal_name: string;
     properties: PatientProperties;
 }

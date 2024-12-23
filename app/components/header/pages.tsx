@@ -3,5 +3,5 @@ export const pages = [
     {href: '/disease/search', label: 'Disease Search'},
     {href: '/medicament/search', label: 'Medicament Search'},
     {href: '/patient/search', label: 'Patient Search'},
-    {href: '/organization/search', label: 'Organization Search'},
+    {href: '/organization/search', label: 'Organization Search'}
 ];
